@@ -65,7 +65,7 @@
       </div>
 
       <div class="footer__copyright">
-        <small>Copyright &copy; 2025 PURPLE BLOG</small>
+        <small>Copyright &copy; 2025 NHOM 9</small>
       </div>
     </footer>
 
