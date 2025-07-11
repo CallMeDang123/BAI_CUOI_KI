@@ -1,8 +1,57 @@
 <?php
 include 'partials/header.php';
+
+// fetch users from database but not current user
+$current_admin_id = $_SESSION['user-id'];
+
+$query = "SELECT * FROM users WHERE NOT id=$current_admin_id";
+$users = mysqli_query($connection, $query);
 ?>
 
 <section class="dashboard">
+
+  <?php if (isset($_SESSION['add-user-success'])) : // show if add user was successful ?>
+      <div class="alert__message success container">
+          <p>
+              <?= $_SESSION['add-user-success'];
+              unset($_SESSION['add-user-success']);
+              ?>
+          </p>
+      </div>
+  <?php elseif (isset($_SESSION['edit-user-success'])) : // show if edit user was successful ?>
+      <div class="alert__message success container">
+          <p>
+              <?= $_SESSION['edit-user-success'];
+              unset($_SESSION['edit-user-success']);
+              ?>
+          </p>
+      </div>
+  <?php elseif (isset($_SESSION['edit-user'])) : // show if edit user was NOT successful ?>
+      <div class="alert__message error container">
+          <p>
+              <?= $_SESSION['edit-user'];
+              unset($_SESSION['edit-user']);
+              ?>
+          </p>
+      </div>
+  <?php elseif (isset($_SESSION['delete-user'])) : // show if delete user was NOT successful ?>
+      <div class="alert__message error container">
+          <p>
+              <?= $_SESSION['delete-user'];
+              unset($_SESSION['delete-user']);
+              ?>
+          </p>
+      </div>
+  <?php elseif (isset($_SESSION['delete-user-success'])) : // show if delete user was successful ?>
+      <div class="alert__message success container">
+          <p>
+              <?= $_SESSION['delete-user-success'];
+              unset($_SESSION['delete-user-success']);
+              ?>
+          </p>
+      </div>
+  <?php endif ?>
+
   <div class="container dashboard__container">
     <button id="show__sidebar-btn" class="sidebar__toggle">
       <i class="uil uil-angle-right-b"></i>
@@ -10,6 +59,7 @@ include 'partials/header.php';
     <button id="hide__sidebar-btn" class="sidebar__toggle">
       <i class="uil uil-angle-left-b"></i>
     </button>
+
     <aside>
       <ul>
         <li>
@@ -59,6 +109,7 @@ include 'partials/header.php';
     </aside>
     <main>
       <h2>Manage Users</h2>
+      <?php if(mysqli_num_rows($users) > 0) : ?>
       <table>
         <thead>
           <tr>
@@ -70,43 +121,24 @@ include 'partials/header.php';
           </tr>
         </thead>
         <tbody>
-          <tr>
-            <td>Minh Vuong</td>
-            <td>vuong</td>
-            <td><a href="edit-user.php" class="btn sm">Edit</a></td>
-            <td>
-              <a href="delete-category.php" class="btn sm danger"
-                >Delete</a
-              >
-            </td>
-            <td>Yes</td>
+          <?php while ($user = mysqli_fetch_assoc($users)) : ?>
+              <tr>
+                  <td><?= "{$user['firstname']} {$user['lastname']}" ?></td>
+                  <td><?= $user['username'] ?></td>
+                  <td><a href="<?= ROOT_URL ?>admin/edit-user.php?id=<?= $user['id'] ?>" class="btn sm">Edit</a></td>
+                  <td>
+                    <a href="<?= ROOT_URL ?>admin/delete-user.php?id=<?= $user['id'] ?>" class="btn sm danger"
+                      >Delete</a
+                    >
+                </td>
+            <td><?= $user['is_admin'] ? 'Yes' : 'No' ?></td>
           </tr>
-
-          <tr>
-            <td>Minh Hai</td>
-            <td>hai</td>
-            <td><a href="edit-user.php" class="btn sm">Edit</a></td>
-            <td>
-              <a href="delete-category.php" class="btn sm danger"
-                >Delete</a
-              >
-            </td>
-            <td>Yes</td>
-          </tr>
-
-          <tr>
-            <td>Minh Tu</td>
-            <td>tu</td>
-            <td><a href="edit-user.php" class="btn sm">Edit</a></td>
-            <td>
-              <a href="delete-category.php" class="btn sm danger"
-                >Delete</a
-              >
-            </td>
-            <td>No</td>
-          </tr>
+          <?php endwhile ?>
         </tbody>
       </table>
+      <?php else : ?>
+          <div class="alert__message error"><?= "No users found" ?></div>
+      <?php endif ?>
     </main>
   </div>
 </section>

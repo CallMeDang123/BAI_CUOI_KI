@@ -65,7 +65,7 @@
       </div>
 
       <div class="footer__copyright">
-        <small>Copyright &copy; 2025 NHOM 9</small>
+        <small>Copyright &copy; 2025 <a href="cs\index.html" target="_blank">NHOM 9</a></small>
       </div>
     </footer>
 
